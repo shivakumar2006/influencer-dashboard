@@ -1,5 +1,7 @@
 import streamlit as st 
 from utils.parser import parse_file
+from utils.validator import validate_frames
+from services.classifier import Classifier
 
 st.set_page_config(
     page_title="Influencer Dashboard",
@@ -48,21 +50,77 @@ if analyze:
 
     else: 
         done = parse_file(uploaded_file)
-        st.success("File upload successfully")
+        
+        valid, missing = validate_frames(done)
+        if not valid: 
+            st.error(f"missing required columns: {', '.join(missing)}")
+            st.stop()
+
+        st.success("CSV validated successfully")
+
+        st.subheader("📊 Dataset Overview")
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric(
+            "Total Influencers",
+            len(done)
+        )
+
+        col2.metric(
+            "Platforms",
+            done["platform"].nunique()
+        )
+
+        col3.metric(
+            "Total Followers",
+            f"{done['followers'].sum():,}"
+        )
+
+        st.subheader("📄 Uploaded Dataset")
         st.dataframe(done)
 
 
+        classifier = Classifier()
 
-# Render UI
+        with st.spinner("Analyzing influencers using Claude AI..."):
+            result_df = classifier.classify_dataframe(
+                dataframe=done,
+                language=language,
+                orientation=orientation,
+                niche=niche,
+                keywords=keywords,
+            )
 
-# ↓
+        result_df = result_df.sort_values(
+            by="score",
+            ascending=False
+        )
 
-# Collect Inputs
+        st.subheader("📈 Classification Summary")
 
-# ↓
+        col1, col2, col3, col4 = st.columns(4)
 
-# Call Services
+        col1.metric(
+            "Matched",
+            int(result_df["match"].sum())
+        )
 
-# ↓
+        col2.metric(
+            "Average Score",
+            f"{result_df['score'].mean():.0f}"
+        )
 
-# Show Results
+        col3.metric(
+            "Highest Score",
+            int(result_df["score"].max())
+        )
+
+        col4.metric(
+            "Average Confidence",
+            f"{result_df['confidence'].mean():.0f}%"
+        )
+
+        st.subheader("🤖 Classification Results")
+
+        st.dataframe(result_df)
