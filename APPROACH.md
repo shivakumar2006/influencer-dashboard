@@ -4,7 +4,7 @@
 
 For this assignment, I implemented the **File-Based Analysis** approach, as the assignment allowed either a real-time search solution or a file-based solution.
 
-The application allows users to upload a CSV or Excel file containing influencer information. Once the file is uploaded, it is parsed using Pandas and validated to ensure all required columns are present. After successful validation, each influencer is analyzed individually using Anthropic Claude AI.
+The application allows users to upload a CSV or Excel file containing influencer information. Once the file is uploaded, it is parsed using Pandas and validated to ensure all required columns are present. After successful validation, each influencer is analyzed individually using Anthropic Claude API.
 
 The AI receives the user-defined search criteria (language, orientation, content niche, and keywords) along with the influencer's profile information (bio and recent posts). Based on this information, the AI evaluates how closely the influencer matches the provided criteria and returns a structured JSON response.
 
