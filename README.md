@@ -94,7 +94,7 @@ The uploaded dataset should contain the following columns:
 
 ```bash
 git clone <repository-url>
-cd influencer-discovery-dashboard
+cd influencer-dashboard
 ```
 
 ## Create Virtual Environment
