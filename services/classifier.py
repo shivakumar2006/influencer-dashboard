@@ -38,8 +38,3 @@ class Classifier:
 
             results.append(result)
         return pd.DataFrame(results)
-    
-    result_df = result_df.sort_values(
-    by="score",
-    ascending=False
-)
